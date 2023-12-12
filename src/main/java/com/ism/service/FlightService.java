@@ -1,17 +1,14 @@
 package com.ism.service;
 
-import com.ism.DTO.FlightDto;
+import com.ism.dto.FlightDto;
 import com.ism.mapper.FlightMapper;
 import com.ism.model.Flight;
 import com.ism.repository.FlightRepository;
-import org.apache.el.parser.ParseException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +51,7 @@ public class FlightService {
     }
     @Transactional
     public void deleteFlightById(Long id){
-         flightRepository.deleteFlightById(id);
+         flightRepository.deleteById(id);
     }
 
     public boolean CheckFNumberContainsFourDigitNumber(String number) {

@@ -1,8 +1,7 @@
 package com.ism.controller;
 
 
-import com.ism.DTO.FlightDto;
-import com.ism.mapper.FlightMapper;
+import com.ism.dto.FlightDto;
 import com.ism.model.Flight;
 import com.ism.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/flights")
+@RequestMapping(value="/api/flights")
 public class FlightController {
     @Autowired
     FlightService flightService;

@@ -1,8 +1,7 @@
 package com.ism.mapper;
 
-import com.ism.DTO.FlightDto;
+import com.ism.dto.FlightDto;
 import com.ism.model.Flight;
-import org.apache.el.parser.ParseException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
