@@ -13,7 +13,6 @@ public class IsmApplication {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(IsmApplication.class, args);
 	}

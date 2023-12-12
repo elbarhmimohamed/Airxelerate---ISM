@@ -4,13 +4,13 @@ package com.ism.service;
 import com.ism.dto.RoleDto;
 import com.ism.mapper.RoleMapper;
 import com.ism.model.Role;
-import com.ism.model.User;
 import com.ism.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -20,20 +20,30 @@ public class RoleService {
     @Autowired
     RoleMapper roleMapper;
 
-    public List<Role> getRoles(){
-        return roleRepository.findAll();
+    public List<RoleDto> getRoles(){
+
+        List<Role> roles = roleRepository.findAll();
+        List<RoleDto> roleDtos = roles.stream().map( r -> roleMapper.convertToDto(r))
+                .collect(Collectors.toList());
+
+        return roleDtos;
     }
 
-    public Role getRoleById(Long id){
+
+    public RoleDto getRoleById(Long id){
         Optional<Role> role = roleRepository.findById(id);
         if(role.isPresent()){
-            return role.get();
+            return roleMapper.convertToDto(role.get());
         }
         return  null;
     }
 
-    public Role getRoleByName(String name){
-        return roleRepository.findByName(name).orElse(null) ;
+    public RoleDto getRoleByName(String name){
+        Optional<Role> role = roleRepository.findByName(name);
+        if(role.isPresent()){
+            return roleMapper.convertToDto(role.get());
+        }
+        return  null;
     }
 
     public Role addRole(RoleDto roleDto){

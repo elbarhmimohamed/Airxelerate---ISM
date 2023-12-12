@@ -30,12 +30,8 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/auth/register").hasAuthority("admin")
-                .requestMatchers(HttpMethod.GET,"/api/flights/**").hasAuthority("user")
                 .requestMatchers(HttpMethod.POST,"/api/flights/**").hasAuthority("admin")
-
-                //.requestMatchers("/api/roles").permitAll()  ==> using in test (insert of roles, create first admin account)
-                //.requestMatchers("/api/auth/register").permitAll()
-                
+                .requestMatchers(HttpMethod.DELETE,"/api/flights/**").hasAuthority("admin")
                 .anyRequest().authenticated()
                 .and().httpBasic();
 

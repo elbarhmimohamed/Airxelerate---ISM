@@ -22,7 +22,9 @@ import java.util.Objects;
 @RequestMapping(value = "/api/auth")
 public class AuthController {
     private final static String USER_ERROR_ALREADY_EXIST = "user already exists";
-    private final static String LOGIN_ERROR = "user already exists";
+    private final static String REGISTER_URL = "/register";
+    private final static String LOGIN_URL = "/login";
+    private final static String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
     @Autowired
     private JWTUtility jwtUtility;
     @Autowired
@@ -32,9 +34,9 @@ public class AuthController {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    @PostMapping("/register")
+    @PostMapping(REGISTER_URL)
     public ResponseEntity<String> addUser(@RequestBody UserDto userDto) {
-        User checkedUser = userService.getUserByUserName(userDto.getUsername());
+        UserDto checkedUser = userService.getUserByUserName(userDto.getUsername());
         if(Objects.nonNull(checkedUser)){
             return ResponseEntity.badRequest().body(USER_ERROR_ALREADY_EXIST);
         }
@@ -44,14 +46,14 @@ public class AuthController {
     }
 
 
-    @PostMapping("/login")
+    @PostMapping(LOGIN_URL)
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest authRequest) throws Exception{
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new Exception(INVALID_CREDENTIALS, e);
         }
 
         final UserDetails userDetails = customUserDetailsService.loadUserByUsername(authRequest.getUsername());

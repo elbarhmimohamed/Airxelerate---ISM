@@ -1,14 +1,16 @@
 package com.ism.service;
+import com.ism.dto.RoleDto;
 import com.ism.dto.UserDto;
+import com.ism.mapper.RoleMapper;
 import com.ism.mapper.UserMapper;
-import com.ism.model.Role;
 import com.ism.model.User;
 import com.ism.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -20,23 +22,39 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
     @Autowired
+    RoleMapper roleMapper;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public List<UserDto> getUserDtos(){
+
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = users.stream().map( u -> userMapper.convertToDto(u))
+                .collect(Collectors.toList());
+
+        return userDtos;
     }
 
-    public User getUserById(Long id){
-        return userRepository.findById(id).orElse(null);
+    public UserDto getUserById(Long id){
+        User user = userRepository.findById(id).orElse(null);
+        if(Objects.nonNull(user)){
+            return userMapper.convertToDto(user);
+        }
+        return null;
     }
-    public User getUserByUserName(String username){
-        return userRepository.findByUsername(username) .orElse(null);
+    public UserDto getUserByUserName(String username){
+
+        User user = userRepository.findByUsername(username).orElse(null);
+        if(Objects.nonNull(user)){
+            return userMapper.convertToDto(user);
+        }
+        return null;
     }
 
     public UserDto addUser(UserDto userDto){
         User user = userMapper.convertToEntity(userDto);
-        Role role = roleService.getRoleById(user.getRole().getId());
-        user.setRole(role);
+        RoleDto roleDto = roleService.getRoleById(user.getRole().getId());
+        user.setRole(roleMapper.convertToEntity(roleDto));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.convertToDto(userRepository.save(user));
     }
@@ -44,13 +62,5 @@ public class UserService {
     public void deleteUser(Long id){
         userRepository.deleteById(id);
     }
-    /*
-    public String BCryptPasswordEncod(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(password);
-        return  encodedPassword;
-    }
-    */
-
 
 }

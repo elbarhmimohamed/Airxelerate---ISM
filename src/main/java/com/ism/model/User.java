@@ -29,7 +29,7 @@ public class User {
     private String password;
 
     @NotNull
-    @OneToOne
+    @ManyToOne(optional = false)
     private Role role;
 
     public User() {}
