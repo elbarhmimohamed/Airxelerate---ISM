@@ -1,6 +1,8 @@
 package com.ism.controller;
 
 
+import com.ism.DTO.FlightDto;
+import com.ism.mapper.FlightMapper;
 import com.ism.model.Flight;
 import com.ism.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +28,25 @@ public class FlightController {
     private static final String FLIGHT_CODE_PATH_VARIABLE_PATTERN = "/{flightId}";
 
     @GetMapping
-    public ResponseEntity<List<Flight>> getAllFlights() {
-        ArrayList<Flight> flights = (ArrayList<Flight>) flightService.findAllFlights();
-        return ResponseEntity.ok().body(flights);
+    public ResponseEntity<List<FlightDto>> getAllFlights() {
+        ArrayList<FlightDto> flightDtos = (ArrayList<FlightDto>) flightService.findAllFlights();
+        return ResponseEntity.ok().body(flightDtos);
     }
 
     @GetMapping(FLIGHT_CODE_PATH_VARIABLE_PATTERN)
-    public ResponseEntity<Object> getFlight(@PathVariable Long flightId) {
-        Optional<Flight> flight = flightService.findFlightById(flightId);
-        if(flight.isEmpty()){
-            return ResponseEntity.badRequest().body(FLIGHT_NOT_EXIST);
-        }
-        return ResponseEntity.ok().body(flight.get());
+    public ResponseEntity<FlightDto> getFlight(@PathVariable Long flightId) {
+        FlightDto flightDto = flightService.findFlightById(flightId);
+        return ResponseEntity.ok().body(flightDto);
     }
 
     @PostMapping
-    public ResponseEntity<String> addFlight(@RequestBody Flight flight) {
+    public ResponseEntity<String> addFlight(@RequestBody FlightDto flightDto) {
 
-        if(!flightService.CheckFNumberContainsFourDigitNumber(flight.getFlightNumber())){
+        if(!flightService.CheckFNumberContainsFourDigitNumber(flightDto.getFlightNumber())){
             return ResponseEntity.badRequest().body(FLIGHT_NUMBER_LENGTH_ERROR_MESSAGE);
         }
 
-        Flight addedFlight = flightService.addFlght(flight);
+        Flight addedFlight = flightService.addFlght(flightDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(FLIGHT_CODE_PATH_VARIABLE_PATTERN)
                     .buildAndExpand(addedFlight.getId()).toUri();
@@ -56,8 +55,9 @@ public class FlightController {
 
     @DeleteMapping(FLIGHT_CODE_PATH_VARIABLE_PATTERN)
     public ResponseEntity<String> deleteFlight(@PathVariable Long flightId) {
-        Optional<Flight> flight = flightService.findFlightById(flightId);
-        if (flight.isEmpty()) {
+
+        FlightDto flightDto = flightService.findFlightById(flightId);
+        if (Objects.isNull(flightDto)) {
             return  ResponseEntity.badRequest().body(FLIGHT_NOT_EXIST);
         }
         // delete flight by id (void method)
