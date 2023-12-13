@@ -44,10 +44,12 @@ public class FlightService {
         return flightDto;
     }
 
-    public Flight addFlght(FlightDto flightDto) {
+    public FlightDto addFlght(FlightDto flightDto) {
 
         Flight flight = flightMapper.convertToEntity(flightDto);
-        return flightRepository.save(flight);
+        Flight addFlight = flightRepository.save(flight);
+
+        return flightMapper.convertToDto(addFlight);
     }
     @Transactional
     public void deleteFlightById(Long id){

@@ -44,7 +44,7 @@ public class FlightController {
             return ResponseEntity.badRequest().body(FLIGHT_NUMBER_LENGTH_ERROR_MESSAGE);
         }
 
-        Flight addedFlight = flightService.addFlght(flightDto);
+        FlightDto addedFlight = flightService.addFlght(flightDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(FLIGHT_CODE_PATH_VARIABLE_PATTERN)
                     .buildAndExpand(addedFlight.getId()).toUri();
